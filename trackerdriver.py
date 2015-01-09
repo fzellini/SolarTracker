@@ -10,6 +10,7 @@ import pickle
 import os
 from Vec3d import Vec3d
 
+
 def getpitchroll(azi, ele):
     vz = math.sin(math.radians(ele))
     vx = -math.cos(math.radians(azi)) * math.cos(math.radians(ele))
@@ -49,6 +50,8 @@ class TrackerDriver:
     def gotopitchrollpos(self, pitchpos, rollpos):
         """
           move both axis together
+        :param pitchpos: pitch position in reed steps
+        :param rollpos: roll position in reed steps
         """
         log.info("going to pos [pitch %d, roll %d]" % (pitchpos, rollpos))
 
@@ -63,7 +66,7 @@ class TrackerDriver:
         self.rollMotor.wait = 0
         self.pitchMotor.wait = 0
 
-        # todo: no delay on relais switch here !
+        #
         pitch = False
         if abs(pitchpos - self.pitchMotor.pos >= self.pitchMotor.minstep):
             if pitchpos > self.pitchMotor.pos:
@@ -140,7 +143,11 @@ class TrackerDriver:
 
     def gotopitchrollangle(self, pitchangle, rollangle):
         """
-          move both axis at time
+          move tracker at specified pitch and roll angle
+          positive values for pitch points north, for roll points east
+          both pitch and roll == 0 means  horizontal position
+        :param pitchangle:  pitch angle
+        :param rollangle:   roll angle
         """
         log.info("going to pitchangle %f, rollangle %f" % (pitchangle, rollangle))
         pitchpos = self.pitchMotor.angle2pos(pitchangle)
@@ -177,11 +184,11 @@ class TrackerDriver:
         """
           save tracker state (motor position)
         """
-        if (os.path.exists(self.statefile)):
-            input = open(self.statefile, 'rb')
+        if os.path.exists(self.statefile):
+            inputhandle = open(self.statefile, 'rb')
             # Pickle dictionary using protocol 0.
-            state = pickle.load(input)
-            input.close()
+            state = pickle.load(inputhandle)
+            inputhandle.close()
 
             self.pitchMotor.pos, self.rollMotor.pos = state
             log.info("restored position from [%s pitch=%d roll=%d]" % (self.statefile,
@@ -198,6 +205,7 @@ def gpio_out(port, value, label=""):
     log.info("%s simulate setting of GPIO %d to %d" % (label, port, value))
 
 
+# main test
 if __name__ == "__main__":
     logging.basicConfig()
     log = logging.getLogger("trackerdriver")
