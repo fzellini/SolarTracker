@@ -68,7 +68,7 @@ class TrackerDriver:
 
         #
         pitch = False
-        if abs(pitchpos - self.pitchMotor.pos >= self.pitchMotor.minstep):
+        if abs(pitchpos - self.pitchMotor.pos) >= self.pitchMotor.minstep:
             if pitchpos > self.pitchMotor.pos:
                 self.pitchMotor.forward()
             else:
@@ -76,7 +76,7 @@ class TrackerDriver:
             pitch = True
 
         roll = False
-        if abs(rollpos - self.rollMotor.pos >= self.rollMotor.minstep):
+        if abs(rollpos - self.rollMotor.pos) >= self.rollMotor.minstep:
             if rollpos > self.rollMotor.pos:
                 self.rollMotor.forward()
             else:
