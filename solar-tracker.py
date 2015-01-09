@@ -239,10 +239,10 @@ if __name__ == "__main__":
     log.info("Track: %s" % track)
 
     log.info("morning twilight at %s" % (time2str(trise)))
-    log.info("tracking start at %s UTC" % (time2str(tstart)))
+    log.info("tracking start at %s" % (time2str(tstart)))
 
-    log.info("tracking end at %s UTC" % (time2str(tend)))
-    log.info("evening twilight at %s UTC" % (time2str(tset)))
+    log.info("tracking end at %s" % (time2str(tend)))
+    log.info("evening twilight at %s" % (time2str(tset)))
 
 
     t = unixtime()
@@ -308,10 +308,10 @@ if __name__ == "__main__":
             tend = tend + datetime.timedelta(days=1)
 
             log.info("morning twilight at %s" % (time2str(trise)))
-            log.info("tracking start at %s UTC" % (time2str(tstart)))
+            log.info("tracking start at %s" % (time2str(tstart)))
 
-            log.info("tracking end at %s UTC" % (time2str(tend)))
-            log.info("evening twilight at %s UTC" % (time2str(tset)))
+            log.info("tracking end at %s" % (time2str(tend)))
+            log.info("evening twilight at %s" % (time2str(tset)))
 
             day = False
             # calibrate motors
