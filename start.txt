@@ -1,4 +1,6 @@
 # start script on raspberry
+# ~/logs must exists
+
 sudo pigpiod -b 500 -s 10 -f
 nohup python trackerserver.py > /dev/null 2>&1 &
 nohup python solar-tracker.py -s 2m > /dev/null 2>&1 &
