@@ -178,6 +178,7 @@ def setup_gpio():
 
 def cleanup_gpio():
     global config
+    global pi1
     if simulation:
         return
     if iolib == "GPIO":

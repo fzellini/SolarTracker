@@ -106,7 +106,7 @@ class TrackerDriver:
                     if self.pitchMotor.pos > pitchpos - 2:
                         pitch = False
                 else:
-                    #backward
+                    # backward
                     if self.pitchMotor.pos < pitchpos + 2:
                         pitch = False
                 if not pitch:
