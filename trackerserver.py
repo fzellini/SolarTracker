@@ -2,7 +2,7 @@
 # controller motori
 # 
 
-import sys,logging, getopt, re
+import sys, logging, getopt
 import logging.handlers
 import time
 import os
@@ -30,7 +30,7 @@ def domotor(axis, cmd, match):
     elif axis == "roll":
         motor = rollMotor
     else:
-        log.warn("invalid axis [%s]" % (axis))
+        log.warn("invalid axis [%s]" % axis)
         return
 
     if cmd == "calibrate":
@@ -47,7 +47,7 @@ def domotor(axis, cmd, match):
             tDriver.savestate()
 
     time.sleep(1)
-    pass
+
 
 
 class MyTCPHandler(SocketServer.BaseRequestHandler):
@@ -142,7 +142,8 @@ def setup_gpio():
     global pi1
     global simulation
     global config
-    if simulation: return
+    if simulation:
+        return
 
     if iolib == "GPIO":
         # use P1 header pin numbering convention
