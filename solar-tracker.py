@@ -244,7 +244,6 @@ if __name__ == "__main__":
     log.info("tracking end at %s" % (time2str(tend)))
     log.info("evening twilight at %s" % (time2str(tset)))
 
-
     t = unixtime()
     tevt = t
 
