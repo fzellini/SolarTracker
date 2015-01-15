@@ -423,8 +423,8 @@ if __name__ == "__main__":
         # interrupt the program with Ctrl-C
         server.serve_forever()
     except:
-
-        print sys.exc_info()
+        # print sys.exc_info()
+        log.exception("")
         if server:
             print "Shutting down server"
             server.shutdown()
