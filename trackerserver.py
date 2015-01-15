@@ -2,6 +2,8 @@
 # controller motori
 # 
 
+VERSION = "2015-01-15"
+
 import sys, logging, getopt
 import logging.handlers
 import time
@@ -18,6 +20,7 @@ motorCmd = re.compile("(roll|pitch) +((calibrate)|(a) ([-+]?[\d.]+)|(p) ([\d.]+)
 prCmd = re.compile("(pitchroll) +((a) ([-+]?[\d.]+),([-+]?[\d.]+)|(p) ([\d.]+),([\d.]+))")
 aeCmd = re.compile("(ae) +(([\d.]+),([\d.]+))")
 lockCmd = re.compile("(lock) +(on|off|@a ([-+]?[\d.]+),([-+]?[\d.]+))")
+statusCmd = re.compile("(getstatus)")
 
 locked = False
 
@@ -49,10 +52,9 @@ def domotor(axis, cmd, match):
     time.sleep(1)
 
 
-
 class MyTCPHandler(SocketServer.BaseRequestHandler):
     def handle(self):
-        global rollCmd, prCmd, RPCV, locked
+        global prCmd, locked
 
         h = self.request.makefile()
         data = h.readline().strip()
@@ -63,6 +65,15 @@ class MyTCPHandler(SocketServer.BaseRequestHandler):
         #
 
         cmd = False
+
+        match = statusCmd.match(data)
+        if match:
+            log.info("executing getstatus")
+            h.write("version: %s\n" % VERSION)
+            h.write("lock-status: %s\n" % locked)
+            h.write("pitch-motor-position: %d\n" % tDriver.pitchMotor.pos)
+            h.write("roll-motor-position: %d" % tDriver.rollMotor.pos)
+            cmd = "getstatus"
 
         match = motorCmd.match(data)
         if match:
