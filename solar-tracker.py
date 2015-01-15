@@ -170,10 +170,11 @@ if __name__ == "__main__":
             longitude = float(a)
         if o == "--motor-driver-address":
             ap = a.split(":")
-            if ap.len() == 1:
+            if len(ap) == 1:
                 motordriveraddress = ap[0]
-            elif ap.len() == 2:
+            elif len(ap) == 2:
                 motordriveraddress, motordriverport = ap
+                motordriverport = int(motordriverport)
             else:
                 usage()
         if o == "--timewarp":
