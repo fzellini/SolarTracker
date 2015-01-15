@@ -4,7 +4,7 @@ from cmd import Cmd
 import socket
 
 
-HOST, PORT = "localhost", 9999
+motordriveraddress, motordriverport = "localhost", 9999
 
 
 def sendcmd(data):
@@ -12,7 +12,7 @@ def sendcmd(data):
     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     try:
         # Connect to server and send data
-        sock.connect((HOST, PORT))
+        sock.connect((motordriveraddress, motordriverport))
         sock.sendall(data + "\n")
         # Receive data from the server and shut down
         sys.stdout.write('Response [')
@@ -57,7 +57,7 @@ class CommandInterpreter(Cmd):
 
 
 def usage():
-    print "Usage : %s [-c, --command=<command>]" % (sys.argv[0])
+    print "Usage : %s [-c, --command=<command>] [--motor-driver-address=<address[:port]>]" % (sys.argv[0])
     sys.exit(1)
 
 
@@ -65,7 +65,7 @@ if __name__ == "__main__":
 
     linecommand = False
     try:
-        opts, args = getopt.getopt(sys.argv[1:], "hc:", ["help", "command="])
+        opts, args = getopt.getopt(sys.argv[1:], "hc:", ["help", "command=", "motor-driver-address="])
     except getopt.GetoptError:
         print "Error parsing argument:", sys.exc_info()[1]
         # print help information and exit:
@@ -80,6 +80,18 @@ if __name__ == "__main__":
         if o in ("-c", "--command"):
             linecommand = a
 
+        if o == "--motor-driver-address":
+            print a
+            ap = a.split(":")
+            if len(ap) == 1:
+                motordriveraddress = ap[0]
+            elif len(ap) == 2:
+                motordriveraddress, motordriverport = ap
+                motordriverport = int(motordriverport)
+            else:
+                usage()
+
+    print ("Using server at %s:%d" % (motordriveraddress, motordriverport))
     cmdi = CommandInterpreter()
     if not linecommand:
         cmdi.cmdloop()
