@@ -150,6 +150,10 @@ class TrackerDriver:
         :param rollangle:   roll angle
         """
         log.info("going to pitchangle %f, rollangle %f" % (pitchangle, rollangle))
+        # fix angles for motors
+        pitchangle = self.pitchMotor.fixangle(pitchangle)
+        rollangle = self.pitchMotor.fixangle(rollangle)
+
         pitchpos = self.pitchMotor.angle2pos(pitchangle)
         rollpos = self.rollMotor.angle2pos(rollangle)
         self.gotopitchrollpos(pitchpos, rollpos)

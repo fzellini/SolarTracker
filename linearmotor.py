@@ -67,7 +67,17 @@ class LinearMotor:
         self.setEdgeCallbackFn = None
         self.cancelPulseCallbackFn = None
 
+        self.minAngle = None
+        self.maxAngle = None
+
         log.info("LinearMotor %s created" % name)
+
+    def setanglerange(self, minangle, maxangle):
+        """
+        set angle range for this motor
+        """
+        self.minAngle = minangle
+        self.maxAngle = maxangle
 
     def setinitialpos(self, pos):
         """
@@ -160,6 +170,7 @@ class LinearMotor:
         self.off()
 
     def angle2pos(self, angle):
+        anglein = angle
         angle += 90
 
         beta = angle - self.b1
@@ -183,11 +194,21 @@ class LinearMotor:
 
         position = px / self.pulseStep
         # log.info ( "%s for %f degree LX is %f (%f inches)" % (self.name,angle,px,px/25.4))
-        log.info("%s - angle2pos - Position: %f" % (self.name, position))
+        log.debug("%s - angle2pos - angle %f -> position: %f" % (self.name, anglein, position))
         return position
+
+    def fixangle(self, angle):
+        if self.minAngle is not None and angle < self.minAngle:
+            angle = self.minAngle
+            log.warn("%s angle too low: clipped to %f" % (self.name, angle))
+        if self.maxAngle is not None and angle > self.maxAngle:
+            angle = self.maxAngle
+            log.warn("%s angle too high: clipped to %f" % (self.name, angle))
+        return angle
 
     def goangle(self, angle):
         log.info("%s going to angle %f" % (self.name, angle))
+        angle = self.fixangle(angle)
         position = self.angle2pos(angle)
         self.gopos(position)
 

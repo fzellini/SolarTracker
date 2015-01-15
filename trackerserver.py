@@ -366,6 +366,13 @@ if __name__ == "__main__":
     pitchMotor.set_edgepulsecallbackfn(set_edgecallbackfn)
     pitchMotor.set_cancelpulsecallbackfn(cancelcallback)
 
+    if config.has_option("pitch", "minangle"):
+        pitchMotor.minAngle = config.getfloat("pitch", "minangle")
+        log.info("Pitch motor has a min angle %f" % pitchMotor.minAngle)
+    if config.has_option("pitch", "maxangle"):
+        pitchMotor.maxAngle = config.getfloat("pitch", "maxangle")
+        log.info("Pitch motor has a max angle %f" % pitchMotor.maxAngle)
+
     rollMotor = linearmotor.LinearMotor(
         "[roll]",
         dirport=config.getint("roll", "dirport"),
@@ -384,6 +391,13 @@ if __name__ == "__main__":
     rollMotor.set_gpioin(gpio_in)
     rollMotor.set_edgepulsecallbackfn(set_edgecallbackfn)
     rollMotor.set_cancelpulsecallbackfn(cancelcallback)
+
+    if config.has_option("roll", "minangle"):
+        rollMotor.minAngle = config.getfloat("roll", "minangle")
+        log.info("Roll motor has a min angle %f" % rollMotor.minAngle)
+    if config.has_option("roll", "maxangle"):
+        rollMotor.maxAngle = config.getfloat("roll", "maxangle")
+        log.info("Roll motor has a max angle %f" % rollMotor.maxAngle)
 
     tDriver = trackerdriver.TrackerDriver(pitchMotor, rollMotor, angleOffset, statefile=statefile)
     # if statefile and os.path.isfile(statefile):
