@@ -2,7 +2,7 @@
 # controller motori
 # 
 
-VERSION = "2015-01-15"
+VERSION = "2015-01-16"
 
 import sys, logging, getopt
 import logging.handlers
@@ -70,6 +70,7 @@ class MyTCPHandler(SocketServer.BaseRequestHandler):
         if match:
             log.info("executing getstatus")
             h.write("version: %s\n" % VERSION)
+            h.write("config-file: %s\n" % configFile)
             h.write("lock-status: %s\n" % locked)
             h.write("pitch-motor-position: %d\n" % tDriver.pitchMotor.pos)
             h.write("roll-motor-position: %d" % tDriver.rollMotor.pos)
