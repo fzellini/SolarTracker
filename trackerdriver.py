@@ -53,7 +53,8 @@ class TrackerDriver:
         :param pitchpos: pitch position in reed steps
         :param rollpos: roll position in reed steps
         """
-        log.info("going to pos [pitch %d, roll %d]" % (pitchpos, rollpos))
+        log.info("going to pos [pitch %d, roll %d] from [pitch %d, roll %d]" % (pitchpos, rollpos,
+                                                                                self.pitchMotor.pos, self.rollMotor.pos))
 
         # todo: check also for max values
         if pitchpos < 0:

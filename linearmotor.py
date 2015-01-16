@@ -129,7 +129,7 @@ class LinearMotor:
         """
           goto position
         """
-        log.info("%s going to pos %d" % (self.name, newpos))
+        log.info("%s going to pos %d from %d" % (self.name, newpos, self.pos))
         if newpos < 0:
             newpos = 0
             log.info("%s newpos forced to 0" % self.name)
@@ -214,8 +214,10 @@ class LinearMotor:
 
     def edgepulse(self, gpio=None, level=None, tick=None):
 
-        # if not self.power:
-        #  return                          # glitch ?
+        if not self.power:
+            log.warn("%s pulse occured when power was off" % (self.name) )
+            # return                          # glitch ?
+
         if level is None:
             level = self.gpioIn(self.pulsePort)
 

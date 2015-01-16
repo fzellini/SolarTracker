@@ -20,7 +20,7 @@ motorCmd = re.compile("(roll|pitch) +((calibrate)|(a) ([-+]?[\d.]+)|(p) ([\d.]+)
 prCmd = re.compile("(pitchroll) +((a) ([-+]?[\d.]+),([-+]?[\d.]+)|(p) ([\d.]+),([\d.]+))")
 aeCmd = re.compile("(ae) +(([\d.]+),([\d.]+))")
 lockCmd = re.compile("(lock) +(on|off|@a ([-+]?[\d.]+),([-+]?[\d.]+))")
-statusCmd = re.compile("(getstatus)")
+statusCmd = re.compile("(getstatus|gs)")
 
 locked = False
 
