@@ -1,7 +1,7 @@
 # start script on raspberry
 # ~/logs must exists
 
-sudo pigpiod -b 500 -s 10 -f
+sudo pigpiod -b 1200
 
 # on tracker #1
 nohup python trackerserver.py > /dev/null 2>&1 &
