@@ -12,25 +12,26 @@ import socket
 import pytz
 
 
-formatter = logging.Formatter('%(name)-12s: %(levelname)-8s %(message)s')
+formatter = logging.Formatter(fmt='%(asctime)s - %(levelname)s - %(message)s')
 logName = os.environ['HOME'] + "/logs/tracker2.log"
 log = logging.getLogger("tracker2")
 log.setLevel(logging.DEBUG)
 fh = logging.handlers.TimedRotatingFileHandler(filename=logName, when="midnight", interval=1, backupCount=5)
 fh.setLevel(logging.DEBUG)
-# fh.setFormatter (formatter)
+fh.setFormatter(formatter)
 log.addHandler(fh)
 
 ch = logging.StreamHandler()
 ch.setLevel(logging.DEBUG)
-# ch.setFormatter (formatter)
+ch.setFormatter(formatter)
 log.addHandler(ch)
 
 
 def usage():
     print "Usage : %s [--latitude=<latitude> ] [--longitude=<longitude>] [--timezone=<timezone, default CET>] " \
           "[-s,--step=<step[s|m]>] [--motor-driver-address=<address[:port]>] [--timewarp=<factor>] [--simulate] " \
-          "[--startfrom=<dd/mm/YYYY-HH:MM>]" % (sys.argv[0])
+          "[--startfrom=<dd/mm/YYYY-HH:MM>] " \
+          "[--calibrateon=<list of comma separated weekday to perform calibration(0=Monday), default 6>]" % (sys.argv[0])
     sys.exit(1)
 
 
@@ -117,10 +118,6 @@ def getlocaltime(dt):
     return dt + utcoffset
 
 
-def time2str(dt):
-    return "%s (%s UTC)" % (getlocaltime(dt), dt)
-
-
 if __name__ == "__main__":
 
     step = 60
@@ -131,13 +128,14 @@ if __name__ == "__main__":
     simulate = False
     startFROM = False
     timeZone = "CET"
+    calibrateon = [6]
 
     import getopt
 
     try:
         opts, args = getopt.getopt(sys.argv[1:], "hs:",
                                    ["help", "latitude=", "longitude=", "motor-driver-address=", "step=", "timewarp=",
-                                    "simulate", "startfrom=", "timezone="])
+                                    "simulate", "startfrom=", "timezone=", "calibrateon="])
     except getopt.GetoptError:
         # print help information and exit:
         print "Error parsing argument:", sys.exc_info()[1]
@@ -163,6 +161,9 @@ if __name__ == "__main__":
         if o == "--startfrom":
             startFROM = datetime.datetime.strptime(a, "%d/%m/%Y-%H:%M")
             log.info("startFROM %s" % startFROM)
+        if o == "--calibrateon":
+            calibrateon = [int(weekday) for weekday in a.split(',')]
+
 
         if o == "--latitude":
             latitude = float(a)
@@ -185,6 +186,7 @@ if __name__ == "__main__":
     log.info("Tracker location [%f,%f], timezone %s" % (latitude, longitude, timeZone))
     log.info("Step is %f seconds" % step)
     log.info("motor driver server address [%s:%d]" % (motordriveraddress, motordriverport))
+    log.info("calibrateon %s" % calibrateon)
 
     if timeWarp:
         log.warn("simulation mode: timeWarp %d" % timeWarp)
@@ -239,11 +241,11 @@ if __name__ == "__main__":
     log.info("Day: %s" % day)
     log.info("Track: %s" % track)
 
-    log.info("morning twilight at %s" % (time2str(trise)))
-    log.info("tracking start at %s" % (time2str(tstart)))
+    log.info("morning twilight at %s UTC - localtime %s" % (trise, getlocaltime(trise)))
+    log.info("tracking start at %s UTC - localtime %s" % (tstart, getlocaltime(tstart)))
 
-    log.info("tracking end at %s" % (time2str(tend)))
-    log.info("evening twilight at %s" % (time2str(tset)))
+    log.info("tracking end at %s UTC - localtime %s" % (tend, getlocaltime(tend)))
+    log.info("evening twilight at %s UTC - localtime %s" % (tset, getlocaltime(tset)))
 
     t = unixtime()
     tevt = t
@@ -273,7 +275,7 @@ if __name__ == "__main__":
             levt = now
 
         if event:
-            log.info("%s - event [%s]" % (time2str(now), event))
+            log.info("event [%s] on [%s]" % (event, getlocaltime(now)))
         else:
             continue
 
@@ -307,16 +309,20 @@ if __name__ == "__main__":
             tend = tend.replace(year=now.year, month=now.month, day=now.day)
             tend = tend + datetime.timedelta(days=1)
 
-            log.info("morning twilight at %s" % (time2str(trise)))
-            log.info("tracking start at %s" % (time2str(tstart)))
+            log.info("morning twilight at %s UTC - localtime %s" % (trise, getlocaltime(trise)))
+            log.info("tracking start at %s UTC - localtime %s" % (tstart, getlocaltime(tstart)))
 
-            log.info("tracking end at %s" % (time2str(tend)))
-            log.info("evening twilight at %s" % (time2str(tset)))
+            log.info("tracking end at %s UTC - localtime %s" % (tend, getlocaltime(tend)))
+            log.info("evening twilight at %s UTC - localtime %s" % (tset, getlocaltime(tset)))
 
             day = False
-            # calibrate motors
-            sendcmd2motor("roll calibrate")
-            sendcmd2motor("pitch calibrate")
+            # calibrate motors ?
+            nowl = getlocaltime(now)
+            if nowl.weekday() in calibrateon:
+                log.info("Calibration day !")
+                sendcmd2motor("roll calibrate")
+                sendcmd2motor("pitch calibrate")
+                sleep(10)
             #
             az, alt = sun_az_alt(tstart, longitude, latitude)
             log.info("  for next day azimuth %f, elevation %f" % (az, alt))
