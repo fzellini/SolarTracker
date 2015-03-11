@@ -214,7 +214,7 @@ if __name__ == "__main__":
     now = utcnow()
     levt = now
 
-    # giorno o notte ?
+    # day or night ?
     ok, trise = sun_time(now, longitude, latitude, rising=True, angle=twilight_angle)
     ok, tset = sun_time(now, longitude, latitude, rising=False, angle=twilight_angle)
     trise = trise.replace(year=now.year, month=now.month, day=now.day)

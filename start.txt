@@ -10,3 +10,4 @@ nohup python trackerserver.py -c tracker2.ini > /dev/null 2>&1 &
 
 # solar tracker
 nohup python solar-tracker.py -s 1m --calibrateon=5 > /dev/null 2>&1 &
+
