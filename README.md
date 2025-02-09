@@ -9,4 +9,4 @@ Require python-tz
 
 sudo apt-get install python-tz
 
-see http://fabrizio.zellini.org/inseguitore-solare-autocostruito-a-due-assi-con-raspberry-pi
+see [http://fabrizio.zellini.org/inseguitore-solare-autocostruito-a-due-assi-con-raspberry-pi](https://web.archive.org/web/20241004143729/http://fabrizio.zellini.org/inseguitore-solare-autocostruito-a-due-assi-con-raspberry-pi)
